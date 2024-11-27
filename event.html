@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント詳細</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .event-detail {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .event-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .event-time {
+            color: #666;
+            margin: 10px 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+        .back-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .edit-button {
+            background-color: #2196F3;
+            color: white;
+        }
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="event-detail">
+        <div class="event-header">
+            <h1 id="eventTitle">イベントタイトル</h1>
+        </div>
+        <div class="event-time">
+            <p>開始: <span id="eventStart"></span></p>
+            <p>終了: <span id="eventEnd"></span></p>
+        </div>
+        <div class="event-description">
+            <h2>説明</h2>
+            <p id="eventDescription"></p>
+        </div>
+        <div class="button-group">
+            <a href="index.html" class="button back-button">カレンダーに戻る</a>
+            <button id="editButton" class="button edit-button">編集</button>
+            <button id="deleteButton" class="button delete-button">削除</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('id');
+            
+            // LocalStorageからイベントを取得
+            const events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+            const event = events.find(e => e.id.toString() === eventId);
+            
+            if (event) {
+                document.getElementById('eventTitle').textContent = event.title;
+                document.getElementById('eventDescription').textContent = event.description;
+                document.getElementById('eventStart').textContent = new Date(event.start).toLocaleString('ja-JP');
+                document.getElementById('eventEnd').textContent = new Date(event.end).toLocaleString('ja-JP');
+                
+                // 編集ボタンのクリックハンドラ
+                document.getElementById('editButton').onclick = function() {
+                    window.location.href = `post.html?id=${eventId}`;
+                };
+                
+                // 削除ボタンのクリックハンドラ
+                document.getElementById('deleteButton').onclick = function() {
+                    if (confirm('このイベントを削除してもよろしいですか？')) {
+                        const updatedEvents = events.filter(e => e.id.toString() !== eventId);
+                        localStorage.setItem('calendarEvents', JSON.stringify(updatedEvents));
+                        alert('イベントが削除されました');
+                        window.location.href = 'index.html';
+                    }
+                };
+            } else {
+                alert('イベントが見つかりません');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html> 
