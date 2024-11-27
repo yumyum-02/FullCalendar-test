@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
             right: 'dayGridMonth,dayGridWeek,dayGridDay'
         },
         locale: 'ja',
-        selectable: true,
-        editable: true,
+        selectable: false,
+        editable: false,
         
         // LocalStorageからイベントを読み込む
         events: function(fetchInfo, successCallback, failureCallback) {
@@ -35,71 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             window.location.href = `event.html?${params.toString()}`;
-        },
-
-        // 新規イベント追加ボタン
-        customButtons: {
-            addEvent: {
-                text: '新規イベント',
-                click: function() {
-                    window.location.href = 'post.html';
-                }
-            }
-        },
-        headerToolbar: {
-            left: 'prev,next today addEvent',
-            center: 'title',
-            right: 'dayGridMonth,dayGridWeek,dayGridDay'
         }
     });
 
     calendar.render();
-
-    // モーダルを閉じる処理
-    document.querySelectorAll('.close').forEach(closeBtn => {
-        closeBtn.onclick = function() {
-            this.closest('.modal').style.display = 'none';
-        }
-    });
-
-    // モーダル外クリックで閉じる
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = 'none';
-        }
-    }
-
-    // イベント追加フォームの送信処理
-    document.getElementById('addEventForm').onsubmit = function(e) {
-        e.preventDefault();
-        
-        const title = document.getElementById('title').value;
-        const description = document.getElementById('description').value;
-        const start = document.getElementById('start').value;
-        const end = document.getElementById('end').value;
-
-        // カレンダーにイベントを追加
-        calendar.addEvent({
-            title: title,
-            description: description,
-            start: start,
-            end: end
-        });
-
-        // フォームをリセットしてモーダルを閉じる
-        this.reset();
-        document.getElementById('addEventModal').style.display = 'none';
-    }
-
-    // 日付フォーマット用関数
-    function formatDate(date) {
-        if (!date) return '';
-        return new Date(date).toLocaleString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
 }); 
